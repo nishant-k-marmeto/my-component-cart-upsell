@@ -1,0 +1,51 @@
+{
+    "name": "Marmeto GWP",
+    "settings": [
+      {
+        "type": "text",
+        "id": "gwp_heading",
+        "label": "Section Heading",
+        "default": "Hey! select some free product."
+      },
+      {
+        "type": "richtext",
+        "id": "gwp_subheading",
+        "label": "Section Sub Heading",
+        "default": "<p>Click on a free product to select !<\/p>"
+      },
+      {
+        "type": "header",
+        "content": "GWP Offer",
+        "info": "Buy for x, get y offer."
+      },
+      {
+        "type": "checkbox",
+        "id": "gwp_enable",
+        "label": "Enable this offer",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "gwp_customer_filter",
+        "label": "Customer filter",
+        "info": "only customers with above tag will be eligible for the offer, keep input empty if eligible for all customers"
+      },
+      {
+        "type": "collection",
+        "id": "gwp_choose_collection",
+        "label": "Choose Collection"
+      },
+      {
+        "type": "text",
+        "id": "gwp_1_cart_threshold",
+        "label": "Cart value",
+        "default": "1000",
+        "placeholder": "Enter cart value"
+      },
+      {
+        "type": "product_list",
+        "id": "gwp_1_product",
+        "label": "Select Products"
+      }
+    ]
+  }
