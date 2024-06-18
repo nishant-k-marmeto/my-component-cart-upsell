@@ -1,0 +1,41 @@
+{% assign product_form_id = "mm-product-form--" | append: product.id %}
+{% liquid
+        assign current_variant = product.selected_or_first_available_variant
+        assign price = current_variant.price
+        assign compare_at_price = current_variant.compare_at_price
+        assign available = current_variant.available | default: false
+        assign featured_media = product.featured_media
+
+        if current_variant.image != blank
+        assign featured_media = current_variant.image
+        endif
+  %}
+<marmeto-product-card class="product-card" data-offer-id="{{ offer_id }}" data-product-handle="{{ product.handle }}">
+  <div class="gwp-item">
+    <input class="gwp-input" name="{{ offer_id }}" type="checkbox" checked data-offer="{{ offer_id }}" id="{{ current_variant.id }}" value="{{ current_product.id }}" />
+    <div class="gwp--product-card">
+      <label for="{{ current_variant.id }}">
+        <div class="gwp-item--image-wrapper">
+          <div class="gwp-item--image">
+            <img src="{{ featured_media | image_url }}" />
+          </div>
+        </div>
+        <div class="gwp-item--product-info">
+          <div>{{ product.title }}</div>
+           <div id="price-{{ product.id }}"> 
+              {% if current_variant.price < current_variant.compare_at_price %}
+                <span class="gwp-product--price">{{ current_variant.price | money }}</span>
+                <span class="gwp-product--compare-price">{{ current_variant.compare_at_price | money }}</span>
+            {% else %}
+            <div class="gwp-product--price">{{ current_variant.price | money }}</div>
+            {% endif %}
+         </div>
+          {% render 'mm-product-variant-picker', product: product, picker_type: "dropdown" %}
+          <div id="{{ product_form_id }}" data-product-form>
+            <input class="variant---test" type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" disabled>
+          </div>
+        </div>
+      </label>
+    </div>
+  </div>
+</marmeto-product-card>
