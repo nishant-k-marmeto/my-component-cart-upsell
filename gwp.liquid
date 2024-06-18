@@ -1,0 +1,78 @@
+{% assign cart_qualify = false %}
+{% assign offer_level = 0 %}
+
+{% assign cart_value = 0 %}
+
+{% assign collection_to_check = settings.gwp_choose_collection %}
+{% assign cart_limit_1 = settings.gwp_1_cart_threshold | times: 1 %}
+
+{% for item in cart.items %}
+  {% if item.product.collections contains collection_to_check %}
+    {% assign line_price = item.final_line_price | divided_by: 100 %}
+    {% assign cart_value = cart_value | plus: line_price %}
+  {% endif %}
+{% endfor %}
+
+{% if cart_limit_1 != 0 and cart_value >= cart_limit_1 %}
+  {% assign cart_qualify = true %}
+  {% assign offer_level = 1 %}
+{% endif %}
+
+{% assign customer_qualify = true %}
+{% assign customer_filter = settings.gwp_customer_filter | strip %}
+
+{% if customer_filter != blank %}
+  {% unless customer.tags contains customer_filter %}
+    {% assign customer_qualify = false %}
+  {% endunless %}
+{% endif %}
+
+{% assign _cartItems = cart.items | map: 'product_id' %}
+{% assign _offerItems1 = settings.gwp_1_product | map: 'id' %}
+{% assign _offerItems2 = settings.gwp_2_product | map: 'id' %}
+{% assign _offerItems = _offerItems1 | concat: _offerItems2 %}
+
+{% assign offerItem_qualify = true %}
+
+{% for productId in _cartItems %}
+  {% if _offerItems contains productId %}
+    {% assign offerItem_qualify = false %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% if cart_qualify and customer_qualify and offerItem_qualify %}
+  <mm-gwp>
+    <details class="mm_gwp_details" id="gwp_offer_1" open>
+      <summary>
+        <div>
+          {% render 'icon-gift' %}
+          <div class="gwp-heading_wrapper">
+            <div class="gwp-heading bold">{{ settings.gwp_heading | default: 'Free products available' }}</div>
+            <div class="gwp-subheading">{{ settings.gwp_subheading | default: 'Click on the free product' }}</div>
+          </div>
+        </div>
+        <div>
+          <span id="close">close</span>
+          <span id="open">view</span>
+        </div>
+      </summary>
+      <div class="gwp-products-wrapper">
+        {% case offer_level %}
+          {% when 1 %}
+            <form data-id="gwp-form" name="gwp-offer-1">
+              {% for product in settings.gwp_1_product %}
+                {%- render 'gwp-item', product: product, offer_id: 'gwp-offer-1' -%}
+              {% endfor %}
+            </form>
+          {% when 2 %}
+            <form data-id="gwp-form" name="gwp-offer-2">
+              {% for product in settings.gwp_2_product %}
+                {%- render 'gwp-item', product: product, offer_id: 'gwp-offer-2' -%}
+              {% endfor %}
+            </form>
+        {% endcase %}
+      </div>
+    </details>
+  </mm-gwp>
+{% endif %}
